@@ -7,7 +7,9 @@ var logger = require("morgan");
 var indexRouter = require("./app_server/routes/index");
 var usersRouter = require("./app_server/routes/users");
 var travelRouter = require("./app_server/routes/travel");
+var api_router = require("./app_api/routes/index");
 var handlebars = require("hbs");
+require("./app_api/models/db"); // Connect to the database
 var app = express();
 
 // view engine setup
@@ -22,9 +24,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Define the routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/", travelRouter);
+app.use("/api", api_router);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
