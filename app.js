@@ -12,6 +12,14 @@ var handlebars = require("hbs");
 require("./app_api/models/db"); // Connect to the database
 var app = express();
 
+// enable Cors
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "http://localhost:4200"); // update to match the domain you will make the request from
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+	next();
+});
+
 // view engine setup
 app.set("views", path.join(__dirname, "app_server", "views"));
 // register handlebars partials
