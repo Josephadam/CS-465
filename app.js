@@ -12,10 +12,17 @@ var handlebars = require("hbs");
 require("./app_api/models/db"); // Connect to the database
 var app = express();
 
+// Wire in our authentication module
+var passport = require("passport");
+require("./app_api/config/passport");
+
+// Load environment variables from .env file
+require("dotenv").config();
+
 // enable Cors
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "http://localhost:4200"); // update to match the domain you will make the request from
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 	next();
 });
@@ -31,6 +38,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(express.static(path.join(__dirname, "public")));
+app.use(passport.initialize());
+
+// Catch unauthorized error and create 401
+app.use((err, req, res, next) => {
+	if (err.name === "UnauthorizedError") {
+		res.status(401).json({ message: err.name + ": " + err.message });
+	}
+});
 
 // Define the routes
 app.use("/", indexRouter);
